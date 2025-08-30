@@ -11,9 +11,14 @@ export const register = async (req, res) => {
     try {
         const { email, fullName, username, password, confirmPassword, gender } = req.body
 
-        if ([fullName, username, password, confirmPassword, gender].some((field) => field?.trim() === "")) {
+        if ([ email, username, fullName,  password, confirmPassword, gender].some((field) => field?.trim() === "")) {
             return res.status(400).json({ message: "All fields are required" })
         }
+
+        //if atleast one is required then 
+        // if(!email  && !username){
+        //      return res.status(400).json({ message: "email or username is required" })
+        // }
 
         if (password !== confirmPassword) {
             return res.status(400).json({ message: "Password do not match" })
@@ -46,9 +51,10 @@ export const register = async (req, res) => {
         })
 
 
-        return res.json({message:"user create success"})
+        return res.json({message:"account create success",success:true})
 
     } catch (error) {
+        console.log(error)
         return res.status(500).json({message:"internal server error"})
         
     }
