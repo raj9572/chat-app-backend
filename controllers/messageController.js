@@ -28,13 +28,11 @@ export const sendMessage = async(req,res) =>{
             gotConversation.messages.push(newMessage._id)
         }
 
-        await gotConversation.save()
+        await Promise.all([gotConversation.save(), newMessage.save()]) 
 
         //Todo  implement socket io
 
-        return  res.status(201).json({
-            message:"message has been send "
-        })
+        return  res.status(201).json({newMessage})
 
     } catch (error) {
         console.log(error)
@@ -50,8 +48,8 @@ export const getMessage = async(req,res) =>{
             participants : { $all:[senderId,receiverId]}
         }).populate("messages")
 
-        console.log(conversation)
-        return res.status(200).json({message:"message get"})
+        // console.log(conversation)
+        return res.status(200).json(conversation?.messages)
 
     } catch (error) {
         console.log(error)
