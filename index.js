@@ -5,12 +5,14 @@ import userRoute from './routes/userRoute.js'
 import messageRoute from './routes/messageRoute.js'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
+// import { app,server } from "./socket/socket.js";
+
+const app = express()
 
 dotenv.config({
     path:"./.env"
 })
 
-const app = express()
 const port =process.env.PORT || 3000
 
 
