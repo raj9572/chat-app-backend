@@ -54,8 +54,8 @@ export const register = async (req, res) => {
         return res.json({message:"account create success",success:true})
 
     } catch (error) {
-        console.log(error)
-        return res.status(500).json({message:"internal server error"})
+        
+        return res.status(500).json({message:"error while create user"})
         
     }
 
@@ -103,7 +103,7 @@ export const login = async (req, res) => {
                 });
 
     } catch (error) {
-        console.log(error);
+       return res.status(500).json({message:"error while login user"})
     }
 }
 
@@ -114,7 +114,7 @@ export const logout = (req,res) =>{
                 .cookie("token","",{maxAge:0})
                 .json({message:"user logged out"})
     } catch (error) {
-        console.log(error)
+        return res.status(500).json({message:"error while logout "})
     }
 }
 
@@ -125,6 +125,6 @@ export const getOtherUsers = async(req,res) =>{
         const otherUsers = await User.find({_id : {$ne:loggedInUserId}}).select("-password")
         return res.status(200).json(otherUsers)
     } catch (error) {
-        console.log(error)
+       return res.status(500).json({message:"error while getOther user"})
     }
 }

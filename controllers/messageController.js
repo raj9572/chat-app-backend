@@ -1,5 +1,6 @@
 import { Conversation } from "../model/conversationModel.js"
 import { Message } from "../model/messageModel.js"
+import { getReceiverSocketId, io } from "../socket/socket.js"
 
 
 export const sendMessage = async(req,res) =>{
@@ -30,12 +31,18 @@ export const sendMessage = async(req,res) =>{
 
         await Promise.all([gotConversation.save(), newMessage.save()]) 
 
-        //Todo  implement socket io
+       
 
+         const receiverSocketId = getReceiverSocketId(receiverId)
+
+         if(receiverSocketId) {
+            io.to(receiverSocketId).emit("newMessage",newMessage)
+         }
+         
         return  res.status(201).json({newMessage})
 
     } catch (error) {
-        console.log(error)
+        return res.status(500).json({message:"error while sending the message"})
     }
 }
 
@@ -52,6 +59,6 @@ export const getMessage = async(req,res) =>{
         return res.status(200).json(conversation?.messages)
 
     } catch (error) {
-        console.log(error)
+         return res.status(500).json({message:"error while getting the messages"})
     }
 }
