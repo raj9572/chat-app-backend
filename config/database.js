@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const connectDB = async() =>{
     
-mongoose.connect('mongodb://127.0.0.1:27017/chat-app').then(()=>{
-    console.log("Database is connected")
+mongoose.connect(process.env.MONGO_URI).then((connectionInstant)=>{
+     console.log(`/n Mongodb connected !! DB HOST : ${connectionInstant.connection.host}`)
 }).catch(error => {
     console.log(error)
     process.exit(1)

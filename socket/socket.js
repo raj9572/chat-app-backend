@@ -11,7 +11,7 @@ const server = http.createServer(app)
 
 const io = new Server(server, {
     cors: {
-        origin: ['http://localhost:5173'],
+        origin: [process.env.CLIENT_URL, 'http://localhost:5173'],
         methods: ['GET', 'POST']
     }
 })
@@ -31,7 +31,7 @@ io.on("connection", (socket) => {
     const userId = socket.handshake.query.userId
 
     if (userId !== undefined) {
-        userSocketMap[userId] ={ socketId: socket.id, lastSeen: null }
+        userSocketMap[userId] = { socketId: socket.id, lastSeen: null }
     }
     // send the online users to client
     io.emit('getOnlineUsers', userSocketMap)
@@ -39,8 +39,8 @@ io.on("connection", (socket) => {
     socket.on('disconnect', () => {
         console.log('user disconnected ', socket.id)
         if (userSocketMap[userId]) {
-            userSocketMap[userId].lastSeen = new Date().toISOString(); 
-            delete userSocketMap[userId].socketId; 
+            userSocketMap[userId].lastSeen = new Date().toISOString();
+            delete userSocketMap[userId].socketId;
         }
         io.emit('getOnlineUsers', userSocketMap)
     })
