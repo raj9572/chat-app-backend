@@ -18,7 +18,7 @@ const io = new Server(server, {
 
 
 export const getReceiverSocketId = (receiverId) => {
-    return userSocketMap[receiverId]
+    return userSocketMap[receiverId].socketId
 }
 
 const userSocketMap = {}  // {userId ---> socketId}
@@ -26,20 +26,23 @@ const userSocketMap = {}  // {userId ---> socketId}
 // console.log(userSocketMap)
 
 io.on("connection", (socket) => {
-    // console.log('user connected ', socket.id)
+    console.log('user connected ', socket.id)
 
     const userId = socket.handshake.query.userId
 
-    if(userId !== undefined){
-        userSocketMap[userId] = socket.id
+    if (userId !== undefined) {
+        userSocketMap[userId] ={ socketId: socket.id, lastSeen: null }
     }
+    // send the online users to client
+    io.emit('getOnlineUsers', userSocketMap)
 
-    io.emit('getOnlineUsers', Object.keys(userSocketMap))
-
-    socket.on('disconnect',() =>{
-        //  console.log('user disconnected', socket.id)
-         delete userSocketMap[userId]
-         io.emit('getOnlineUsers', Object.keys(userSocketMap))
+    socket.on('disconnect', () => {
+        console.log('user disconnected ', socket.id)
+        if (userSocketMap[userId]) {
+            userSocketMap[userId].lastSeen = new Date().toISOString(); 
+            delete userSocketMap[userId].socketId; 
+        }
+        io.emit('getOnlineUsers', userSocketMap)
     })
 
 
