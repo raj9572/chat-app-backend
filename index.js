@@ -22,7 +22,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 const corsOptions = {
-  origin:[process.env.CLIENT_UR,"http://localhost:5173"],
+  origin:[process.env.CLIENT_URL ,"http://localhost:5173"],
   credentials:true
 }
 
