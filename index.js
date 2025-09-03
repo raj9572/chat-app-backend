@@ -13,7 +13,7 @@ dotenv.config({
     path:"./.env"
 })
 
-const port =process.env.PORT || 3000
+const port =process.env.PORT || 8080
 
 
 // middleware 
@@ -22,7 +22,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 const corsOptions = {
-  origin:process.env.CLIENT_URL,
+  origin:[process.env.CLIENT_UR,"http://localhost:5173"],
   credentials:true
 }
 

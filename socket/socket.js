@@ -26,7 +26,7 @@ const userSocketMap = {}  // {userId ---> socketId}
 // console.log(userSocketMap)
 
 io.on("connection", (socket) => {
-    console.log('user connected ', socket.id)
+    // console.log('user connected ', socket.id)
 
     const userId = socket.handshake.query.userId
 
@@ -37,7 +37,7 @@ io.on("connection", (socket) => {
     io.emit('getOnlineUsers', userSocketMap)
 
     socket.on('disconnect', () => {
-        console.log('user disconnected ', socket.id)
+        // console.log('user disconnected ', socket.id)
         if (userSocketMap[userId]) {
             userSocketMap[userId].lastSeen = new Date().toISOString();
             delete userSocketMap[userId].socketId;
