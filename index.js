@@ -30,6 +30,12 @@ app.use(cors(corsOptions))
 
 
 // route 
+
+//! for login the which url request 
+// app.use((req, res, next) => {
+//   console.log(`[API] ${req.method} ${req.originalUrl}`);
+//   next();
+// });
 app.use("/api/v1/user",userRoute)
 app.use("/api/v1/message",messageRoute)
 

@@ -11,7 +11,7 @@ export const register = async (req, res) => {
     try {
         const { email, fullName, username, password, confirmPassword, gender } = req.body
 
-        if ([ email, username, fullName,  password, confirmPassword, gender].some((field) => field?.trim() === "")) {
+        if ([email, username, fullName, password, confirmPassword, gender].some((field) => field?.trim() === "")) {
             return res.status(400).json({ message: "All fields are required" })
         }
 
@@ -51,12 +51,12 @@ export const register = async (req, res) => {
         })
 
 
-        return res.json({message:"account create success",success:true})
+        return res.json({ message: "account create success", success: true })
 
     } catch (error) {
-        
-        return res.status(500).json({message:"error while create user"})
-        
+
+        return res.status(500).json({ message: "error while create user" })
+
     }
 
 }
@@ -70,9 +70,9 @@ export const login = async (req, res) => {
         if (!username && !email) {
             return res.status(400).json({ message: "username or  required" });
         };
-        const user = await User.findOne({ 
-            $or:[{username}, {email}]
-         });
+        const user = await User.findOne({
+            $or: [{ username }, { email }]
+        });
         if (!user) {
             return res.status(400).json({
                 message: "User does not exist",
@@ -93,38 +93,41 @@ export const login = async (req, res) => {
         const token = await jwt.sign(tokenData, process.env.JWT_SECRET_KEY, { expiresIn: '1d' });
 
         return res.status(200)
-                .cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' })
-                .json({
+            .cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' })
+            .json({
+                user: {
                     _id: user._id,
-                    email:user.email,
+                    email: user.email,
                     username: user.username,
                     fullName: user.fullName,
                     profilePhoto: user.profilePhoto
-                });
+                },
+                token
+            });
 
     } catch (error) {
-       return res.status(500).json({message:"error while login user"})
+        return res.status(500).json({ message: "error while login user" })
     }
 }
 
 
-export const logout = (req,res) =>{
+export const logout = (req, res) => {
     try {
-         return res.status(200)
-                .cookie("token","",{maxAge:0})
-                .json({message:"user logged out"})
+        return res.status(200)
+            .cookie("token", "", { maxAge: 0 })
+            .json({ message: "user logged out" })
     } catch (error) {
-        return res.status(500).json({message:"error while logout "})
+        return res.status(500).json({ message: "error while logout " })
     }
 }
 
 
-export const getOtherUsers = async(req,res) =>{
+export const getOtherUsers = async (req, res) => {
     try {
         const loggedInUserId = req.id
-        const otherUsers = await User.find({_id : {$ne:loggedInUserId}}).select("-password")
+        const otherUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password")
         return res.status(200).json(otherUsers)
     } catch (error) {
-       return res.status(500).json({message:"error while getOther user"})
+        return res.status(500).json({ message: "error while getOther user" })
     }
 }
