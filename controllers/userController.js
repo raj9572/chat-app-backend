@@ -124,8 +124,18 @@ export const logout = (req, res) => {
 
 export const getOtherUsers = async (req, res) => {
     try {
-        const loggedInUserId = req.id
-        const otherUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password")
+         const loggedInUserId = req.id
+        const { name } = req.query
+        let otherUsers
+        if(name !== undefined){
+         otherUsers = await User.find({
+            _id: { $ne: loggedInUserId },                // exclude myself
+            fullName: { $regex: name, $options: "i" }    // case-insensitive search
+        }).select("-password");
+        } else{
+            otherUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password")
+        }
+        // const loggedInUserId = req.id
         return res.status(200).json(otherUsers)
     } catch (error) {
         return res.status(500).json({ message: "error while getOther user" })
