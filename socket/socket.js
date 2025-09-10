@@ -18,7 +18,7 @@ const io = new Server(server, {
 
 
 export const getReceiverSocketId = (receiverId) => {
-    return userSocketMap[receiverId].socketId
+    return userSocketMap[receiverId]?.socketId || null
 }
 
 const userSocketMap = {}  // {userId ---> socketId}
