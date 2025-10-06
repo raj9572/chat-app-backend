@@ -1,3 +1,4 @@
+import { uploadOnCloudinary } from "../config/cloudinary.js"
 import { Conversation } from "../model/conversationModel.js"
 import { Message } from "../model/messageModel.js"
 import { getReceiverSocketId, io } from "../socket/socket.js"
@@ -7,7 +8,15 @@ export const sendMessage = async (req, res) => {
     try {
         const senderId = req.id
         const receiverId = req.params.id
-        const { message } = req.body
+        const {message} = req.body
+       
+
+        let image;
+
+        if(req.file){
+            image = await uploadOnCloudinary(req.file?.path)
+        }
+
 
         let gotConversation = await Conversation.findOne({
             participants: { $all: [senderId, receiverId] }
@@ -20,9 +29,8 @@ export const sendMessage = async (req, res) => {
         };
 
         const newMessage = await Message.create({
-            senderId,
-            receiverId,
-            message
+            senderId, receiverId, message,
+            image : image?.url
         })
 
         if (newMessage) {
